@@ -1,3 +1,4 @@
 module.exports = {
-    homepage: ""
+    homepage: "",
+    port: 3000
 };
