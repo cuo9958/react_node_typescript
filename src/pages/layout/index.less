@@ -1,0 +1,88 @@
+@left-width: 210px; //框架左侧的宽度
+
+#sider {
+    position: fixed;
+    left: 0;
+    top: 0;
+    min-height: 100%;
+    width: @left-width;
+    background: #1f2d3d;
+    box-shadow: 5px 0 10px 1px rgba(200, 200, 200, 0.5);
+
+    #logo {
+        height: 40px;
+        color: #efefef;
+        padding: 10px 10px;
+        background: #324057;
+        border-bottom: solid 1px #475669;
+        font-size: 14px;
+        box-shadow: 0 5px 10px 1px rgba(200, 200, 200, 0.5);
+    }
+    #menus {
+        .el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item,
+        .el-menu-item {
+            color: #eff2f7;
+
+            .fa {
+                margin-bottom: 3px;
+            }
+        }
+        .el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item.is-active,
+        .el-menu-item.is-active {
+            color: #20a0ff;
+            // background: #475669;
+        }
+
+        .menu_bg {
+            margin: 0;
+            background: #324057;
+            list-style: none;
+            padding: 0;
+        }
+        .menu_item {
+            color: #eff2f7;
+            height: 56px;
+            line-height: 56px;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 20px;
+
+            &:hover {
+                background: #475669;
+            }
+            &.active {
+                color: #20a0ff;
+            }
+        }
+    }
+}
+#main {
+    margin-left: @left-width;
+    position: relative;
+
+    .top_menus {
+        position: fixed;
+        top: 0;
+        left: @left-width;
+        right: 0;
+        border-bottom: solid 1px #eff2f7;
+        padding: 10px;
+        height: 40px;
+        font-size: 12px;
+        background: white;
+        z-index: 1;
+        box-shadow: 0 5px 10px 1px rgba(200, 200, 200, 0.5);
+
+        .el-dropdown {
+            cursor: pointer;
+            font-size: 12px;
+        }
+    }
+    .height40 {
+        height: 40px;
+    }
+    .continer {
+        // margin-top: 40px;
+        padding: 20px 10px 10px;
+    }
+}
