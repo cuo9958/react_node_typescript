@@ -1,5 +1,6 @@
 import Err404 from '../pages/404/index';
 import Home from '../pages/home/index';
+import UserRules from '../pages/home/rules';
 import UserDetail from '../pages/home/detail';
 import Topic from '../pages/topic/index';
 import Gather from '../pages/gather/index';
@@ -45,7 +46,8 @@ export default [
         hide: false
     },
     //用户详情
-    { name: 'users', title: '任务详情', hide: true, path: '/users/detail', page: UserDetail, exact: true },
+    { name: 'users', title: '用户权限管理', hide: true, path: '/users/rules', page: UserRules, exact: true },
+    { name: 'users', title: '用户集合管理', hide: true, path: '/users/detail', page: UserDetail, exact: true },
     //项目
     { name: 'topic', title: '项目管理', icon: 'fa fa-thermometer', path: '/topic', page: Topic, exact: true },
     //集合

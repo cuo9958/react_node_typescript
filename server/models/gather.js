@@ -3,7 +3,7 @@ const Op = Sequelize.Op;
 const MysqlConnection = require('../db/mysql');
 
 const Gather = MysqlConnection.define(
-    't_rules',
+    't_gather',
     {
         id: {
             type: Sequelize.INTEGER,
@@ -19,6 +19,11 @@ const Gather = MysqlConnection.define(
             type: Sequelize.STRING,
             defaultValue: '',
             comment: '权限集合'
+        },
+        rules_name: {
+            type: Sequelize.STRING,
+            defaultValue: '',
+            comment: '权限名称集合'
         },
         status: {
             type: Sequelize.TINYINT,
@@ -36,37 +41,52 @@ module.exports = {
     insert(model) {
         return Gather.create(model);
     },
-    getCount(limit = 1, name = '') {
+    getCount(limit = 1, title = '') {
         let config = {
             limit: 20,
             offset: (limit - 1) * 20,
-            order: [['createdAt', 'desc']]
+            order: [['id', 'desc']]
         };
-        if (name) {
+        if (title) {
             config.where = {
-                [Op.or]: {
-                    username: {
-                        [Op.like]: '%' + name + '%'
-                    },
-                    nickname: {
-                        [Op.like]: '%' + name + '%'
-                    }
+                title: {
+                    [Op.like]: '%' + title + '%'
                 }
             };
         }
         return Gather.findAndCountAll(config);
     },
-    get(username) {
+    getAll() {
+        let config = {
+            order: [['id', 'desc']],
+            where: {
+                status: 1
+            }
+        };
+
+        return Gather.findAll(config);
+    },
+    get(id) {
         return Gather.findOne({
             where: {
-                username
+                id
             }
         });
     },
-    update(model, username) {
+    change(id, status) {
+        return Gather.update(
+            { status },
+            {
+                where: {
+                    id
+                }
+            }
+        );
+    },
+    update(model, id) {
         return Gather.update(model, {
             where: {
-                username
+                id
             }
         });
     }

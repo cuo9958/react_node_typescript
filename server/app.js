@@ -6,7 +6,7 @@ const RunTimeMiddle = require('./middleware/run_time');
 
 const app = new Koa();
 const router = new Router();
-const port = config.get('port');
+const port = process.env.PORT || config.get('port');
 
 app.use(
     KoaBody({
@@ -22,9 +22,15 @@ app.use(RunTimeMiddle);
 const test = require('./api/index');
 const user = require('./api/user');
 const topic = require('./api/topic');
+const rules = require('./api/rules');
+const gather = require('./api/gather');
+const open = require('./api/open');
 
 router.use('/api_user/user', user);
 router.use('/api_user/topic', topic);
+router.use('/api_user/rules', rules);
+router.use('/api_user/gather', gather);
+router.use('/api_user/open', open);
 router.use('/api_user', test);
 
 app.use(router.routes()).use(router.allowedMethods());

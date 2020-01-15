@@ -1,0 +1,14 @@
+{
+    "apps": [
+        {
+            "name": "fe_user_center@18063",
+            "script": "server/app.js",
+            "args": [],
+            "env": {
+                "PORT": "18063",
+                "NODE_ENV": "development",
+                "SERVER_ENV": "dev"
+            }
+        }
+    ]
+}

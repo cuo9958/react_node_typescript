@@ -1,5 +1,6 @@
 import axios from 'axios';
 import JSON5 from 'json5';
+import sdk from './sdk';
 
 axios.defaults.timeout = 5000;
 
@@ -73,16 +74,13 @@ class Request {
     }
     getHeaders(ispost: boolean) {
         let headers: any = {};
-        let uid = localStorage.getItem('uid');
-        let token = localStorage.getItem('token');
-        let username = localStorage.getItem('username');
+        const model = sdk.info();
         if (ispost) {
             headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
-        if (uid && token && username) {
-            headers['uid'] = uid;
-            headers['token'] = token;
-            headers['username'] = username;
+        if (model && model.uid) {
+            headers['uid'] = model.uid;
+            headers['token'] = model.token;
         }
         return headers;
     }

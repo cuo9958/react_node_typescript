@@ -3,6 +3,8 @@ import './index.less';
 import { Input, Button, Message } from 'element-react';
 import request from '../../services/request';
 import { inject } from 'mobx-react';
+import FG from 'fingerprintjs2';
+import utils from '../../services/utils';
 
 interface iState {
     form: iForm;
@@ -11,12 +13,21 @@ interface iState {
 interface iForm {
     username: string;
     password: string;
+    uuid?: string;
+}
+interface IParams {
+    cb?: string;
+    uuid?: string;
+}
+
+interface iProps extends iReactRoute {
+    login(data: any): void;
 }
 
 @inject((models: any) => ({
     login: models.user.login
 }))
-export default class extends React.Component<any, iState, iReactRoute> {
+export default class extends React.Component<iProps, iState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -25,7 +36,10 @@ export default class extends React.Component<any, iState, iReactRoute> {
                 password: ''
             }
         };
+        this.params = utils.parseParams(this.props.location.search).query as IParams;
     }
+    params: IParams;
+
     render() {
         return (
             <div id="login">
@@ -62,7 +76,21 @@ export default class extends React.Component<any, iState, iReactRoute> {
             </div>
         );
     }
-
+    componentDidMount() {
+        this.getfg();
+    }
+    uuid: string = '';
+    async getfg() {
+        let uuid = localStorage.getItem('uuid');
+        if (!uuid) {
+            const data = await FG.getPromise();
+            const values = data.map(function(c: any) {
+                return c.value;
+            });
+            uuid = FG.x64hash128(values.join(''), 31);
+        }
+        this.uuid = uuid || '';
+    }
     // 监听input输入框中值的变化，并更新状态
     handleChange = (key: string, value: any) => {
         const newForm = {
@@ -95,10 +123,20 @@ export default class extends React.Component<any, iState, iReactRoute> {
 
     async login() {
         const form = this.state.form;
+        if (this.params.uuid && this.params.uuid.length > 5) {
+            form.uuid = this.params.uuid;
+        } else {
+            form.uuid = this.uuid;
+        }
+
         try {
             const data = await request.post('/user/login', form);
             await this.props.login(data);
-            this.props.history.push('/');
+            if (this.params.cb) {
+                window.location.href = this.params.cb;
+            } else {
+                this.props.history.push('/');
+            }
         } catch (e) {
             console.log(e.message);
             Message.error(e.message);

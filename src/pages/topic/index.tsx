@@ -2,7 +2,6 @@ import React from 'react';
 import './index.less';
 import { Input, Pagination, Button, Dialog, Form, Message, Notification } from 'element-react';
 import request from '../../services/request';
-import utils from '../../services/utils';
 
 interface IForm {
     [index: string]: any;

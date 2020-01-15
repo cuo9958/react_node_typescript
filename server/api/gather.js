@@ -1,12 +1,12 @@
 const Router = require('koa-router');
-const TopicModel = require('../models/topic');
+const GatherModel = require('../models/gather');
 
 const router = new Router();
 
-router.get('/list', async function(ctx) {
+router.get('/', async function(ctx) {
     const { pageIndex, title } = ctx.query;
     try {
-        const data = await TopicModel.getCount(pageIndex, title);
+        const data = await GatherModel.getCount(pageIndex, title);
         ctx.body = {
             code: 1,
             data
@@ -20,7 +20,7 @@ router.get('/list', async function(ctx) {
 });
 router.get('/all', async function(ctx) {
     try {
-        const data = await TopicModel.all();
+        const data = await GatherModel.getAll();
         ctx.body = {
             code: 1,
             data
@@ -32,10 +32,10 @@ router.get('/all', async function(ctx) {
         };
     }
 });
-router.get('/search', async function(ctx) {
-    const { title } = ctx.query;
+router.get('/detail', async function(ctx) {
+    const { id } = ctx.query;
     try {
-        const data = await TopicModel.search(title);
+        const data = await GatherModel.get(id);
         ctx.body = {
             code: 1,
             data
@@ -47,24 +47,23 @@ router.get('/search', async function(ctx) {
         };
     }
 });
+router.post('/detail', async function(ctx) {
+    const { id, title, rules, rules_name } = ctx.request.body;
 
-router.post('/save', async function(ctx) {
-    const { title, img, id } = ctx.request.body;
     try {
-        if (!title) throw new Error('项目名称不能为空');
         const model = {
             title,
-            img
+            rules,
+            rules_name
         };
-        if (!isNaN(id) && id > 0) {
-            await TopicModel.update(model, id);
+        if (id && id > 0) {
+            await GatherModel.update(model, id);
         } else {
-            await TopicModel.insert(model);
+            await GatherModel.insert(model);
         }
 
         ctx.body = {
-            code: 1,
-            data: {}
+            code: 1
         };
     } catch (error) {
         ctx.body = {
@@ -73,19 +72,13 @@ router.post('/save', async function(ctx) {
         };
     }
 });
-
-router.post('/del', async function(ctx) {
-    const { id } = ctx.request.body;
+router.post('/change', async function(ctx) {
+    const { id, status } = ctx.request.body;
     try {
-        if (!isNaN(id) && id > 0) {
-            await TopicModel.del(id);
-        } else {
-            throw new Error('项目不存在');
-        }
-
+        const data = await GatherModel.change(id, status);
         ctx.body = {
             code: 1,
-            data: {}
+            data
         };
     } catch (error) {
         ctx.body = {

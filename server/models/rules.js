@@ -20,6 +20,11 @@ const Rules = MysqlConnection.define(
             defaultValue: 0,
             comment: '专项id'
         },
+        topic_name: {
+            type: Sequelize.STRING(100),
+            defaultValue: '',
+            comment: '专项名称'
+        },
         sort_name: {
             type: Sequelize.STRING(50),
             defaultValue: '',
@@ -49,29 +54,34 @@ module.exports = {
         };
         if (name) {
             config.where = {
-                [Op.or]: {
-                    username: {
-                        [Op.like]: '%' + name + '%'
-                    },
-                    nickname: {
-                        [Op.like]: '%' + name + '%'
-                    }
+                title: {
+                    [Op.like]: '%' + name + '%'
                 }
             };
         }
         return Rules.findAndCountAll(config);
     },
-    get(username) {
+    getAll() {
+        return Rules.findAll();
+    },
+    get(id) {
         return Rules.findOne({
             where: {
-                username
+                id
             }
         });
     },
-    update(model, username) {
+    del(id) {
+        return Rules.findOne({
+            where: { id }
+        }).then(res => {
+            return res.destroy();
+        });
+    },
+    update(model, id) {
         return Rules.update(model, {
             where: {
-                username
+                id
             }
         });
     }

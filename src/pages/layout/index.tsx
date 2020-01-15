@@ -1,14 +1,14 @@
-import React from "react";
-import "./index.less";
-import Utils from "../../services/utils";
-import { Dropdown, Button } from "element-react";
-import url_configs from "../../routes/config";
-import { inject } from "mobx-react";
+import React from 'react';
+import './index.less';
+import Utils from '../../services/utils';
+import { Dropdown, Button } from 'element-react';
+import url_configs from '../../routes/config';
+import { inject } from 'mobx-react';
 
 function Menus(item: any, onSelect: any, active: string) {
     if (item.hide) return;
     return (
-        <li key={item.name} className={"menu_item" + (active === item.name ? " active" : "")} onClick={() => onSelect(item.path)}>
+        <li key={item.name} className={'menu_item' + (active === item.name ? ' active' : '')} onClick={() => onSelect(item.path)}>
             {item.icon && <i className={item.icon}></i>}
             {item.title}
         </li>
@@ -23,11 +23,13 @@ interface iState {
 interface iProps extends iReactRoute {
     nickname: string;
     check(): void;
+    login(): void;
 }
 
 @inject((models: any) => ({
     nickname: models.user.nickname,
-    check: models.user.check
+    check: models.user.check,
+    login: models.user.login
 }))
 export default class extends React.Component<iProps, iState> {
     constructor(props: any) {
@@ -70,7 +72,7 @@ export default class extends React.Component<iProps, iState> {
                             </Dropdown>
                         )}
                         {!this.props.nickname && (
-                            <Button type="primary" size="mini" onClick={() => this.onCommand("/login")}>
+                            <Button type="primary" size="mini" onClick={() => this.login()}>
                                 登录
                             </Button>
                         )}
@@ -97,6 +99,12 @@ export default class extends React.Component<iProps, iState> {
     };
 
     onCommand = (command: string) => {
+        if (command === '/login') {
+            return this.login();
+        }
         this.props.history.push(command);
     };
+    login() {
+        this.props.login();
+    }
 }

@@ -53,6 +53,22 @@ module.exports = {
         }
         return Topic.findAndCountAll(config);
     },
+    search(title = '') {
+        let config = {
+            limit: 10,
+            order: [['id', 'desc']],
+            where: {
+                title: {
+                    [Op.like]: '%' + title + '%'
+                }
+            }
+        };
+
+        return Topic.findAll(config);
+    },
+    all() {
+        return Topic.findAll();
+    },
     get(id) {
         return Topic.findOne({
             where: {

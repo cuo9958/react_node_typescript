@@ -1,12 +1,11 @@
 import React from 'react';
-import { Input, Icon, Button, Message } from 'element-react';
+import { Icon, Button, Message } from 'element-react';
 import request from '../../services/request';
 import Utils from '../../services/utils';
 import './index.less';
 
 interface IModel {
     [index: string]: any;
-    title: string;
     rules: number[];
     rules_name: string[];
 }
@@ -14,6 +13,16 @@ interface IState {
     model: IModel;
     rules: any;
     topics: any[];
+    info: IInfo;
+}
+
+interface IInfo {
+    username?: string;
+    nickname?: string;
+    headimg?: string;
+    mail?: string;
+    mobile?: string;
+    status?: number;
 }
 
 interface IRule {
@@ -35,7 +44,7 @@ function Rule(props: IRule) {
 
 interface IParams {
     [index: string]: any;
-    id: number;
+    username: string;
 }
 
 export default class extends React.Component<iReactRoute, IState> {
@@ -43,10 +52,10 @@ export default class extends React.Component<iReactRoute, IState> {
         super(props);
         this.state = {
             model: {
-                title: '',
                 rules: [],
                 rules_name: []
             },
+            info: {},
             rules: {},
             topics: []
         };
@@ -58,7 +67,7 @@ export default class extends React.Component<iReactRoute, IState> {
 
     render() {
         return (
-            <div id="gather_detail">
+            <div id="user_rules">
                 <div className="rules">
                     {this.state.topics.map((item: any, index: number) => (
                         <div className="rule_item" key={index}>
@@ -83,13 +92,22 @@ export default class extends React.Component<iReactRoute, IState> {
                 </div>
 
                 <div className="footer">
-                    <Input className="input_s" value={this.state.model.title} onChange={this.onChange.bind(this, 'title')} placeholder="请输入"></Input>
-                    <Button onClick={this.save} type="primary">
-                        保存
-                    </Button>
-                    <Button onClick={this.clear} type="primary">
-                        清空
-                    </Button>
+                    <div className="info">
+                        <img src={this.state.info.headimg} alt="" />
+                        <span>{this.state.info.nickname}</span>
+                        <span>{this.state.info.mail}</span>
+                        <span>{this.state.info.mobile}</span>
+                    </div>
+                    <div className="save">
+                        <Button.Group>
+                            <Button onClick={this.save} type="primary">
+                                保存
+                            </Button>
+                            <Button onClick={this.clear} type="success">
+                                清空
+                            </Button>
+                        </Button.Group>
+                    </div>
                     <div className="rules">
                         {this.state.model.rules_name.map((item, index) => (
                             <div className="item" key={index}>
@@ -107,17 +125,17 @@ export default class extends React.Component<iReactRoute, IState> {
         this.getDetail();
     }
     async getDetail() {
-        if (!this.params.id) return;
+        if (!this.params.username) return;
         try {
-            const data = await request.get('/gather/detail', { id: this.params.id });
+            const data = await request.get('/user/detail', { username: this.params.username });
             const rules = data.rules.split(',');
-
+            const rules_name = data.ruleTxts ? data.ruleTxts.split(',') : [];
             this.setState({
                 model: {
-                    title: data.title,
                     rules: rules,
-                    rules_name: data.rules_name.split(',')
-                }
+                    rules_name: rules_name
+                },
+                info: data
             });
         } catch (error) {
             console.log(error);
@@ -141,14 +159,6 @@ export default class extends React.Component<iReactRoute, IState> {
         } catch (error) {
             console.log(error);
         }
-    }
-
-    onChange(key: string, value: any) {
-        const model = this.state.model;
-        model[key] = value;
-        this.setState({
-            model
-        });
     }
 
     onClick(rule: any) {
@@ -177,12 +187,20 @@ export default class extends React.Component<iReactRoute, IState> {
         }
     }
 
+    clear = () => {
+        this.setState({
+            model: {
+                rules: [],
+                rules_name: []
+            }
+        });
+    };
+
     save = async () => {
         console.log(this.state.model);
         try {
-            await request.post('/gather/detail', {
-                id: this.params.id,
-                title: this.state.model.title,
+            await request.post('/user/detail', {
+                username: this.params.username,
                 rules: this.state.model.rules.join(','),
                 rules_name: this.state.model.rules_name.join(',')
             });
@@ -191,15 +209,5 @@ export default class extends React.Component<iReactRoute, IState> {
             console.log(error);
             Message.error(error.message);
         }
-    };
-
-    clear = () => {
-        this.setState({
-            model: {
-                title: this.state.model.title,
-                rules: [],
-                rules_name: []
-            }
-        });
     };
 }

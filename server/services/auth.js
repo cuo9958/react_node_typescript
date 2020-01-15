@@ -58,10 +58,11 @@ module.exports = {
         model.uid = getGuid();
         model.token = data.token;
         model.rules = modelData.rules;
+        model.section = modelData.section;
         caches.set(model.uid, model);
-        console.log(model)
-        //100天
-        Redis.set('fe_user_center_' + model.uid, JSON.stringify(model), 'EX', 8640000);
+        console.log(model);
+        //10天
+        Redis.set('fe_user_center_' + model.uid, JSON.stringify(model), 'EX', 864000);
         return model;
     },
     /**
@@ -69,11 +70,12 @@ module.exports = {
      * @param {*} uid
      */
     async info(uid) {
-        if (!uid) throw new Error('用户不存在');
-        if (caches.has(uid)) return caches.get(uid);
-        console.log('fe_user_center_' + uid)
+        if (!uid) return null;
+        if (caches.has(uid)) {
+            return caches.get(uid);
+        }
         const data = await Redis.get('fe_user_center_' + uid);
-        if (!data) throw new Error('用户不存在');
+        if (!data) return null;
         const model = JSON.parse(data);
         caches.set(uid, model);
         return model;

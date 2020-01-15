@@ -25,6 +25,11 @@ const User = MysqlConnection.define(
             defaultValue: '',
             comment: '邮箱'
         },
+        section: {
+            type: Sequelize.STRING(100),
+            defaultValue: '',
+            comment: '部门'
+        },
         mobile: {
             type: Sequelize.STRING(100),
             defaultValue: '',
@@ -88,12 +93,28 @@ module.exports = {
         }
         return User.findAndCountAll(config);
     },
+    getAll() {
+        let config = {
+            order: [['id', 'desc']]
+        };
+        return User.findAll(config);
+    },
     get(username) {
         return User.findOne({
             where: {
                 username
             }
         });
+    },
+    change(username, status) {
+        return User.update(
+            { status },
+            {
+                where: {
+                    username
+                }
+            }
+        );
     },
     update(model, username) {
         return User.update(model, {
