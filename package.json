@@ -92,7 +92,7 @@
     "unzipper": "^0.10.5",
     "url-loader": "2.1.0",
     "url-parse": "^1.4.7",
-    "webpack": "4.41.0",
+    "webpack": "5.94.0",
     "webpack-dev-server": "3.2.1",
     "webpack-manifest-plugin": "2.1.1",
     "workbox-webpack-plugin": "4.3.1"
